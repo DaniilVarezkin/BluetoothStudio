@@ -12,40 +12,41 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import com.daniilvarezhkin.bluetoothstudio.data.ble.permissions.BLUETOOTH_PERMISSIONS
 import com.daniilvarezhkin.bluetoothstudio.data.ble.permissions.PermissionManager
+import com.daniilvarezhkin.bluetoothstudio.presentation.scan.ScanScreen
 import com.daniilvarezhkin.bluetoothstudio.ui.theme.BluetoothStudioTheme
+import dagger.hilt.android.AndroidEntryPoint
+import jakarta.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject lateinit var permissionManager: PermissionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             BluetoothStudioTheme {
-                val permissionManager = PermissionManager(LocalContext.current)
-
                 val launcher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.RequestMultiplePermissions()
                 ) { result ->
-                    Log.e("AAA", result.toString())
                     if(result.values.all { it }) {
-                        Log.e("AAA", "Разрешения выданы")
+
                     }
                 }
 
-                Log.e("AAA", permissionManager.getNotGranted(BLUETOOTH_PERMISSIONS).toList().toString())
-
-                if (permissionManager.getNotGranted(BLUETOOTH_PERMISSIONS).isEmpty()) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(Color(0, 255, 0))
-                    )
+                if (permissionManager.check(BLUETOOTH_PERMISSIONS)) {
+                    ScanScreen()
                 } else {
+                    LaunchedEffect(Unit) {
+                        launcher.launch(permissionManager.getNotGranted(BLUETOOTH_PERMISSIONS))
+                    }
                     Box(
                         modifier = Modifier
                             .fillMaxSize()
