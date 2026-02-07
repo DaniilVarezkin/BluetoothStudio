@@ -60,6 +60,9 @@ dependencies {
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
 
+    //Navigation
+    implementation(libs.androidx.hilt.navigation.compose)
+
     implementation(project(":data"))
     implementation(project(":domain"))
 }

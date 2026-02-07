@@ -1,6 +1,7 @@
 package com.daniilvarezhkin.bluetoothstudio.di
 
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScanner
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.GetScanStateUseCase
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.StartScanBleUseCase
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.StopScanBleUseCase
 import dagger.Module
@@ -23,5 +24,11 @@ internal object UseCaseModule {
     @ViewModelScoped
     fun provideStopScanBleUseCase(bleScanner: BleScanner): StopScanBleUseCase {
         return StopScanBleUseCase(bleScanner)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetScanStateUseCase(bleScanner: BleScanner): GetScanStateUseCase {
+        return GetScanStateUseCase(bleScanner)
     }
 }

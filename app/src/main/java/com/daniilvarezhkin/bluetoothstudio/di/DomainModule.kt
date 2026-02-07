@@ -6,16 +6,16 @@ import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScanner
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import dagger.hilt.android.scopes.ViewModelScoped
 
 @Module
-@InstallIn(SingletonComponent::class)
+@InstallIn(ViewModelComponent::class)
 internal object DomainModule {
 
     @Provides
-    @Singleton
+    @ViewModelScoped
     fun provideBleScanner(@ApplicationContext context: Context): BleScanner {
         return BleScannerImpl(context)
     }

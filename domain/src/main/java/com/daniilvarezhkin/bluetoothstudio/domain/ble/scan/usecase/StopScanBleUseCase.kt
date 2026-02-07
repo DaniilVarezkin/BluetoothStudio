@@ -6,6 +6,6 @@ class StopScanBleUseCase(
     val bleScanner: BleScanner
 ) {
     operator fun invoke() {
-        bleScanner.startScan()
+        bleScanner.stopScan()
     }
 }
