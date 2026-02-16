@@ -1,4 +1,4 @@
-package com.daniilvarezhkin.bluetoothstudio.presentation.scan
+package com.daniilvarezhkin.bluetoothstudio.presentation.screen.scan
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
