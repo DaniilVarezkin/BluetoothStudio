@@ -8,14 +8,13 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
-import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScannedDevice
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScanner
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
+import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 
 class BleScannerImpl(
@@ -61,20 +60,20 @@ class BleScannerImpl(
 
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
-            Log.e("AAA", "Ошибка: $errorCode")
+            Timber.e("Ошибка: $errorCode")
         }
     }
 
     @RequiresPermission(allOf = [Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT])
     override fun startScan() {
-        Log.e("AAA", "Начало сканирования")
+        Timber.i("Начало сканирования")
         leScanner.startScan(scanCallback)
         _isScanning.value = true
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     override fun stopScan() {
-        Log.e("AAA", "Остановка сканирования")
+        Timber.i("Остановка сканирования")
         leScanner.stopScan(scanCallback)
         _isScanning.value = false
     }

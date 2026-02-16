@@ -22,6 +22,7 @@ import com.daniilvarezhkin.bluetoothstudio.presentation.scan.ScanScreen
 import com.daniilvarezhkin.bluetoothstudio.ui.theme.BluetoothStudioTheme
 import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

@@ -36,6 +36,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 
@@ -62,6 +63,9 @@ dependencies {
 
     //Navigation
     implementation(libs.androidx.hilt.navigation.compose)
+
+    //Logging
+    implementation(libs.timber)
 
     implementation(project(":data"))
     implementation(project(":domain"))
