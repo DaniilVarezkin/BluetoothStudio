@@ -1,4 +1,4 @@
-package com.daniilvarezhkin.bluetoothstudio.domain.ble.scan
+package com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.model
 
 data class BleScannedDevice(
     val name: String?,

@@ -9,7 +9,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import com.daniilvarezhkin.bluetoothstudio.data.ble.permissions.PermissionManager
 import com.daniilvarezhkin.bluetoothstudio.presentation.navigation.NavigationRoot
-import com.daniilvarezhkin.bluetoothstudio.ui.theme.BluetoothStudioTheme
+import com.daniilvarezhkin.bluetoothstudio.presentation.ui.theme.BluetoothStudioTheme
 import dagger.hilt.android.AndroidEntryPoint
 import jakarta.inject.Inject
 
@@ -25,13 +25,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             BluetoothStudioTheme {
-                Scaffold { innerPadding ->
-                    NavigationRoot(
-                        modifier = Modifier
-                            .padding(innerPadding),
-                        permissionManager
-                    )
-                }
+                NavigationRoot(permissionManager)
             }
         }
     }

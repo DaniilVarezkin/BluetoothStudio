@@ -1,4 +1,4 @@
-package com.daniilvarezhkin.bluetoothstudio.ui.theme
+package com.daniilvarezhkin.bluetoothstudio.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

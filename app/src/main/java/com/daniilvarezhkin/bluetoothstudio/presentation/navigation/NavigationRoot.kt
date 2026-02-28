@@ -15,8 +15,8 @@ import com.daniilvarezhkin.bluetoothstudio.presentation.screen.scan.ScanScreen
 
 @Composable
 fun NavigationRoot(
-    modifier: Modifier = Modifier,
-    permissionManager: PermissionManager
+    permissionManager: PermissionManager,
+    modifier: Modifier = Modifier
 ) {
     val startRoute = remember {
         if (permissionManager.getNotGranted(BLUETOOTH_PERMISSIONS).isEmpty()) {

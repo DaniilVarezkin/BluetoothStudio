@@ -2,7 +2,9 @@ package com.daniilvarezhkin.bluetoothstudio.di
 
 import android.content.Context
 import com.daniilvarezhkin.bluetoothstudio.data.ble.scan.BleScannerImpl
+import com.daniilvarezhkin.bluetoothstudio.data.ble.scan.repository.BleDeviceRepositoryImpl
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScanner
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.repository.BleDeviceRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,5 +20,11 @@ internal object DomainModule {
     @ViewModelScoped
     fun provideBleScanner(@ApplicationContext context: Context): BleScanner {
         return BleScannerImpl(context)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideBleDeviceRepository(bleScanner: BleScanner): BleDeviceRepository {
+        return BleDeviceRepositoryImpl(bleScanner)
     }
 }

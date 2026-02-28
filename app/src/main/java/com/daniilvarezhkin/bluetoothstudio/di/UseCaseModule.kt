@@ -1,6 +1,8 @@
 package com.daniilvarezhkin.bluetoothstudio.di
 
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScanner
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.repository.BleDeviceRepository
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.GetFoundedDevicesUseCase
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.GetScanStateUseCase
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.StartScanBleUseCase
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.StopScanBleUseCase
@@ -30,5 +32,11 @@ internal object UseCaseModule {
     @ViewModelScoped
     fun provideGetScanStateUseCase(bleScanner: BleScanner): GetScanStateUseCase {
         return GetScanStateUseCase(bleScanner)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideGetFoundedDevicesUseCase(bleDeviceRepository: BleDeviceRepository): GetFoundedDevicesUseCase {
+        return GetFoundedDevicesUseCase(bleDeviceRepository)
     }
 }

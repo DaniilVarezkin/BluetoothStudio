@@ -9,8 +9,9 @@ import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
 import androidx.annotation.RequiresPermission
-import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScannedDevice
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScanner
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.model.BleScanResult
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.model.BleScannedDevice
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,9 +22,9 @@ class BleScannerImpl(
     val context: Context
 ) : BleScanner {
     private val foundDeviceMap = ConcurrentHashMap<String, BleScannedDevice>()
-    private val _foundDevices: MutableStateFlow<List<BleScannedDevice>> = MutableStateFlow(listOf())
+    private val _foundDevices: MutableStateFlow<BleScanResult> = MutableStateFlow(BleScanResult())
 
-    override val foundDevices: StateFlow<List<BleScannedDevice>> = _foundDevices.asStateFlow()
+    override val foundDevices: StateFlow<BleScanResult> = _foundDevices.asStateFlow()
     private val _isScanning = MutableStateFlow(false)
 
     override val isScanning: StateFlow<Boolean> = _isScanning.asStateFlow()
@@ -44,7 +45,7 @@ class BleScannerImpl(
     private val scanCallback: ScanCallback = object : ScanCallback() {
         @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
-
+            Timber.i("Обновлен результат сканирования")
             if (result == null) return
 
             val scannedDevice = BleScannedDevice(
@@ -55,7 +56,7 @@ class BleScannerImpl(
 
             foundDeviceMap[scannedDevice.mac] = scannedDevice
 
-            _foundDevices.value = foundDeviceMap.values.sortedByDescending { device -> device.rssi }
+            _foundDevices.value = BleScanResult(foundDeviceMap.values.sortedByDescending { device -> device.rssi })
         }
 
         override fun onScanFailed(errorCode: Int) {
