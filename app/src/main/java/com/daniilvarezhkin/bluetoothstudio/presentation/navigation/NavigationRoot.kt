@@ -10,6 +10,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.daniilvarezhkin.bluetoothstudio.data.ble.permissions.BLUETOOTH_PERMISSIONS
 import com.daniilvarezhkin.bluetoothstudio.data.ble.permissions.PermissionManager
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.DeviceConnectionScreen
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.permission.PermissionScreen
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.scan.ScanScreen
 
@@ -45,7 +46,13 @@ fun NavigationRoot(
 
                 is Route.DeviceList -> {
                     NavEntry(key) {
-                        ScanScreen()
+                        ScanScreen(onDeviceClick = { backStack.add(Route.DeviceConnection(it)) })
+                    }
+                }
+
+                is Route.DeviceConnection -> {
+                    NavEntry(key) {
+                        DeviceConnectionScreen(key.macAddress)
                     }
                 }
 

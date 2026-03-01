@@ -21,7 +21,7 @@ class BleConnectionImpl(
     private var bluetoothGatt: BluetoothGatt? = null;
 
     private val _connectionState: MutableStateFlow<ConnectionState> = MutableStateFlow(ConnectionState.DISCONNECTED)
-    val connectionState = _connectionState.asStateFlow()
+    override val connectionState = _connectionState.asStateFlow()
 
     private val gattCallback = object : BluetoothGattCallback() {
 

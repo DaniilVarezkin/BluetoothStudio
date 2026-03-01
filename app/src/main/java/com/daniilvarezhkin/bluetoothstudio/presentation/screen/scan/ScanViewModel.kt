@@ -60,4 +60,9 @@ class ScanViewModel @Inject constructor(
             _foundedDevices.value = devices
         }
     }
+
+    override fun onCleared() {
+        Timber.i("onCleared")
+        stopScan()
+    }
 }

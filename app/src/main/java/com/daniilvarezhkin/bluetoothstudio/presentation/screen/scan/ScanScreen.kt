@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import com.daniilvarezhkin.bluetoothstudio.R
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.compose.runtime.getValue
@@ -23,7 +24,9 @@ import com.daniilvarezhkin.bluetoothstudio.presentation.components.CustomScaffol
 import com.daniilvarezhkin.bluetoothstudio.presentation.views.DeviceItemView
 
 @Composable
-fun ScanScreen() {
+fun ScanScreen(
+    onDeviceClick: (String) -> Unit
+) {
     val vm: ScanViewModel = hiltViewModel()
 
     val uiState by vm.uiState.collectAsStateWithLifecycle()
@@ -36,11 +39,21 @@ fun ScanScreen() {
             onStartScan = vm::startScan,
             onStopScan = vm::stopScan,
             devices = devices,
-            onClickDevice = vm::connectToDevice,
+            onClickDevice = { macAddress ->
+                vm.stopScan()
+                onDeviceClick(macAddress)
+            },
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
         )
+    }
+
+    DisposableEffect(Unit) {
+        vm.startScan()
+        onDispose {
+            vm.stopScan()
+        }
     }
 }
 
@@ -92,7 +105,7 @@ private fun DeviceListView(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        items(devices) { device ->
+        items(devices, key = { it.mac }) { device ->
             DeviceItemView(
                 device.name ?: stringResource(R.string.unknown_name),
                 device.mac,

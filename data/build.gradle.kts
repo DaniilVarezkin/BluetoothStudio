@@ -41,4 +41,5 @@ dependencies {
     implementation(libs.timber)
 
     implementation(project(":domain"))
+    implementation(project(":core"))
 }

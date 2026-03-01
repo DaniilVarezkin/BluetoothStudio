@@ -10,4 +10,7 @@ sealed interface Route {
 
     @Serializable
     data object DeviceList: Route, NavKey
+
+    @Serializable
+    data class DeviceConnection(val macAddress: String) : Route, NavKey
 }

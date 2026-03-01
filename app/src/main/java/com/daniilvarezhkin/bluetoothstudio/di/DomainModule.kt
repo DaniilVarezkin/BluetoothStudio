@@ -1,8 +1,10 @@
 package com.daniilvarezhkin.bluetoothstudio.di
 
 import android.content.Context
+import com.daniilvarezhkin.bluetoothstudio.data.ble.connection.BleConnectionFactoryImpl
 import com.daniilvarezhkin.bluetoothstudio.data.ble.scan.BleScannerImpl
 import com.daniilvarezhkin.bluetoothstudio.data.ble.scan.repository.BleDeviceRepositoryImpl
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.BleConnectionFactory
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScanner
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.repository.BleDeviceRepository
 import dagger.Module
@@ -26,5 +28,11 @@ internal object DomainModule {
     @ViewModelScoped
     fun provideBleDeviceRepository(bleScanner: BleScanner): BleDeviceRepository {
         return BleDeviceRepositoryImpl(bleScanner)
+    }
+
+    @Provides
+    @ViewModelScoped
+    fun provideBleConnectionFactory(@ApplicationContext context: Context): BleConnectionFactory {
+        return BleConnectionFactoryImpl(context)
     }
 }
