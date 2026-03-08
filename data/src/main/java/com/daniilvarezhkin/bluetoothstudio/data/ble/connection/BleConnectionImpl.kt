@@ -6,8 +6,10 @@ import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothProfile
 import android.content.Context
+import com.daniilvarezhkin.bluetoothstudio.data.ble.connection.extensions.toDomainGattService
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.BleConnection
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.ConnectionState
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.GattService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import timber.log.Timber
@@ -22,6 +24,9 @@ class BleConnectionImpl(
 
     private val _connectionState: MutableStateFlow<ConnectionState> = MutableStateFlow(ConnectionState.DISCONNECTED)
     override val connectionState = _connectionState.asStateFlow()
+
+    private val _gattServices :MutableStateFlow<List<GattService>> = MutableStateFlow(emptyList())
+    override val gattServices = _gattServices.asStateFlow()
 
     private val gattCallback = object : BluetoothGattCallback() {
 
@@ -52,14 +57,20 @@ class BleConnectionImpl(
                 Timber.e("Ошибка чтения сервисов: $status.")
                 return
             }
-            _connectionState.value = ConnectionState.CONNECTED
             Timber.d("Сервисы обнаружены")
+            _connectionState.value = ConnectionState.CONNECTED
+
+            _gattServices.value = gatt?.let { gatt ->
+                gatt.services.map { it.toDomainGattService() }
+            } ?: throw RuntimeException("bluetoothGatt is null")
         }
     }
 
     override fun connect() {
         disconnect()
         Timber.e("Подключение к устройству")
+
+        _connectionState.value = ConnectionState.CONNECTING
         bluetoothGatt = device.connectGatt(context, false, gattCallback)
     }
 

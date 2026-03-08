@@ -1,9 +1,11 @@
 package com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection
 
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.ConnectionState
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.GattService
 
 data class DeviceConnectionUiState(
-    val connectionState: ConnectionState = ConnectionState.DISCONNECTED,
-    val name: String? = null,
     val macAddress: String,
+    val connectionState: ConnectionState = ConnectionState.DISCONNECTED,
+    val deviceName: String? = null,
+    val services: List<GattService> = emptyList()
 )

@@ -1,7 +1,8 @@
 package com.daniilvarezhkin.bluetoothstudio.domain.ble.connection
 
 enum class ConnectionState {
-    CONNECTED,
+    CONNECTING,
     DISCOVER_SERVICES,
+    CONNECTED,
     DISCONNECTED
 }

@@ -5,4 +5,11 @@
 <!--  Device  -->
     <string name="rssi_unit">dBm</string>
     <string name="unknown_name">Unknown</string>
+    <string name="address">Address</string>
+
+<!--    ConnectionState-->
+    <string name="connecting">Connecting</string>
+    <string name="discover_services">Discover services</string>
+    <string name="connected">Connected</string>
+    <string name="disconnected">Disconnected</string>
 </resources>

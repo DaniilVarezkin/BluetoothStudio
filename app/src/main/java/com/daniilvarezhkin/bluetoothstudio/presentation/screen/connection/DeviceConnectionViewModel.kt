@@ -28,6 +28,7 @@ class DeviceConnectionViewModel @AssistedInject constructor(
     }
 
     private var observeConnectionStateJob: Job? = null
+    private var observeGattServicesStateJob: Job? = null
     private val _uiState = MutableStateFlow(DeviceConnectionUiState(macAddress = macAddress))
     val uiState = _uiState.asStateFlow()
 
@@ -44,6 +45,7 @@ class DeviceConnectionViewModel @AssistedInject constructor(
             is Result.Success -> {
                 connection = result.data
                 observeConnectionState()
+                observeGattServicesState()
                 connection?.connect()
             }
 
@@ -56,19 +58,30 @@ class DeviceConnectionViewModel @AssistedInject constructor(
     private fun observeConnectionState() {
         observeConnectionStateJob?.cancel()
         observeConnectionStateJob = viewModelScope.launch {
-            connection?.apply {
-                connectionState.collect { state ->
-                    _uiState.update {
-                        it.copy(connectionState = state)
-                    }
+            connection?.connectionState?.collect { state ->
+                _uiState.update {
+                    it.copy(
+                        connectionState = state
+                    )
                 }
             }
         }
     }
 
+    private fun observeGattServicesState() {
+        observeGattServicesStateJob?.cancel()
+        observeGattServicesStateJob = viewModelScope.launch {
+            connection?.gattServices?.collect { services ->
+                _uiState.update {
+                    it.copy(services = services)
+                }
+            }
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()
+        Timber.i("onCleared: ${this::class.simpleName}")
         connection?.disconnect()
         connection = null
     }

@@ -9,10 +9,12 @@ import androidx.compose.ui.Modifier
 @Composable
 fun CustomScaffold(
     modifier: Modifier = Modifier,
+    topBar: @Composable () -> Unit = {},
     content: @Composable (PaddingValues) -> Unit
 ) {
     Scaffold(
-        modifier = modifier
+        modifier = modifier,
+        topBar = topBar
     ) {
         content(it)
     }

@@ -62,7 +62,8 @@ class ScanViewModel @Inject constructor(
     }
 
     override fun onCleared() {
-        Timber.i("onCleared")
+        super.onCleared()
+        Timber.i("onCleared: ${this::class.simpleName}")
         stopScan()
     }
 }
