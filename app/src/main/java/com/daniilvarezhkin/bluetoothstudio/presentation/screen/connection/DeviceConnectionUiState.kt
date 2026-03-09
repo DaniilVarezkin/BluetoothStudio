@@ -1,6 +1,6 @@
 package com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection
 
-import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.ConnectionState
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.enums.ConnectionState
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.GattService
 
 data class DeviceConnectionUiState(

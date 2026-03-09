@@ -1,4 +1,4 @@
-package com.daniilvarezhkin.bluetoothstudio.domain.ble.connection
+package com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.enums
 
 enum class ConnectionState {
     CONNECTING,

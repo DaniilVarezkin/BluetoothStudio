@@ -9,7 +9,8 @@ import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.ConnectionError
 import com.daniilvarezhkin.core.Result
 
 class BleConnectionFactoryImpl(
-    private val context: Context
+    private val context: Context,
+    private val gattMapper: GattMapper
 ) : BleConnectionFactory {
 
     private val bluetoothAdapter: BluetoothAdapter?
@@ -27,7 +28,7 @@ class BleConnectionFactoryImpl(
                 return Result.Error(ConnectionError.InvalidMacAddress)
             }
             val device = adapter.getRemoteDevice(macAddress)
-            return Result.Success(BleConnectionImpl(context.applicationContext, device))
+            return Result.Success(BleConnectionImpl(context.applicationContext, device, gattMapper))
         } catch (e: Throwable) {
             return Result.Error(ConnectionError.UnknownError(e))
         }

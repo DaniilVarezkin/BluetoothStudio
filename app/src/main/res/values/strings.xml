@@ -7,9 +7,13 @@
     <string name="unknown_name">Unknown</string>
     <string name="address">Address</string>
 
-<!--    ConnectionState-->
+<!--  ConnectionState  -->
     <string name="connecting">Connecting</string>
     <string name="discover_services">Discover services</string>
     <string name="connected">Connected</string>
     <string name="disconnected">Disconnected</string>
+
+<!--  Gatt  -->
+    <string name="custom_service">Custom service</string>
+    <string name="custom_characteristic">Custom characteristic</string>
 </resources>

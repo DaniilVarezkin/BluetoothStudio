@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import com.daniilvarezhkin.bluetoothstudio.R
-import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.ConnectionState
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.enums.ConnectionState
 import com.daniilvarezhkin.bluetoothstudio.presentation.ui.theme.Connected
 import com.daniilvarezhkin.bluetoothstudio.presentation.ui.theme.Connecting
 import com.daniilvarezhkin.bluetoothstudio.presentation.ui.theme.Disconnected

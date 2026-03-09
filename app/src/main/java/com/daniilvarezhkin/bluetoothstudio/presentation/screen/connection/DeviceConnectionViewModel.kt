@@ -3,6 +3,7 @@ package com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.BleConnection
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.GattCharacteristic
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.usecase.GetBleConnectionUseCase
 import com.daniilvarezhkin.core.Result
 import dagger.assisted.Assisted
@@ -38,6 +39,12 @@ class DeviceConnectionViewModel @AssistedInject constructor(
     init {
         Timber.i("Соединение с macAddress: $macAddress")
         connect()
+    }
+
+    fun readCharacteristic(characteristic: GattCharacteristic) {
+        connection?.run {
+            readCharacteristic(characteristic)
+        }
     }
 
     private fun connect() {

@@ -4,21 +4,24 @@ import android.annotation.SuppressLint
 import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
+import android.bluetooth.BluetoothGattCharacteristic
 import android.bluetooth.BluetoothProfile
 import android.content.Context
-import com.daniilvarezhkin.bluetoothstudio.data.ble.connection.extensions.toDomainGattService
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.BleConnection
-import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.ConnectionState
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.enums.ConnectionState
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.GattCharacteristic
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.GattService
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import timber.log.Timber
 
 
 @SuppressLint("MissingPermission")
 class BleConnectionImpl(
     private val context: Context,
-    private val device: BluetoothDevice
+    private val device: BluetoothDevice,
+    private val gattMapper: GattMapper
 ) : BleConnection {
     private var bluetoothGatt: BluetoothGatt? = null;
 
@@ -60,9 +63,98 @@ class BleConnectionImpl(
             Timber.d("Сервисы обнаружены")
             _connectionState.value = ConnectionState.CONNECTED
 
-            _gattServices.value = gatt?.let { gatt ->
-                gatt.services.map { it.toDomainGattService() }
+
+
+            gatt?.let { gatt ->
+                _gattServices.value = gatt.services.map {
+                    gattMapper.run { it.toGattService() }
+                }
             } ?: throw RuntimeException("bluetoothGatt is null")
+        }
+
+        @Deprecated("Deprecated in Java")
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            status: Int
+        ) {
+            if (status == BluetoothGatt.GATT_SUCCESS) {
+                val value = characteristic.value // Берем значение из самого объекта
+                processRead(characteristic, value)
+            }
+        }
+
+        override fun onCharacteristicRead(
+            gatt: BluetoothGatt,
+            characteristic: BluetoothGattCharacteristic,
+            value: ByteArray,
+            status: Int
+        ) {
+            if (status != BluetoothGatt.GATT_SUCCESS) {
+                Timber.e("Ошибка чтения характеристики ${characteristic.uuid}: $status")
+                return
+            }
+            processRead(characteristic, value)
+        }
+
+        private fun processRead(
+            characteristic: BluetoothGattCharacteristic,
+            value: ByteArray,
+        ) {
+            Timber.i("Прочитана характеристика UUID: ${characteristic.uuid} Value: ${value.decodeToString()}")
+
+            gattServices.value.forEach { service ->
+                if (service.uuid == characteristic.service.uuid) {
+                    service.characteristics.forEach { ch ->
+                        if (ch.uuid == characteristic.uuid) {
+                            ch.value.update { value }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    override fun readCharacteristic(characteristic: GattCharacteristic) {
+        Timber.i("Чтение характеристики UUID: ${characteristic.uuid}")
+
+        val gatt = bluetoothGatt
+        if (gatt == null) {
+            Timber.e("bluetoothGatt is null")
+            return
+        }
+
+        // Находим характеристику
+        val gattCharacteristic = gatt.services
+            .flatMap { it.characteristics }
+            .find {
+                it.service.uuid == characteristic.serviceUuid &&
+                        it.uuid == characteristic.uuid
+            }
+
+        if (gattCharacteristic == null) {
+            Timber.e("Characteristic not found: service=${characteristic.serviceUuid}, char=${characteristic.uuid}")
+            return
+        }
+
+        // Проверяем, поддерживает ли чтение
+        if (gattCharacteristic.properties and BluetoothGattCharacteristic.PROPERTY_READ == 0) {
+            Timber.e("Characteristic ${characteristic.uuid} does not support READ")
+            return
+        }
+
+        // Пытаемся прочитать и ПРОВЕРЯЕМ результат
+        val success = gatt.readCharacteristic(gattCharacteristic)
+
+        if (success) {
+            Timber.i("✓ Операция чтения запущена для ${characteristic.uuid}")
+        } else {
+            Timber.e("✗ НЕ УДАЛОСЬ запустить операцию чтения для ${characteristic.uuid}")
+            // Здесь может быть много причин:
+            // - Устройство отключилось
+            // - Слишком много операций в очереди
+            // - Неправильное состояние GATT
+            // - и т.д.
         }
     }
 

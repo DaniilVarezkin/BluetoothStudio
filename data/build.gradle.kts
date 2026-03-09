@@ -39,6 +39,8 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     implementation(libs.timber)
+    implementation(libs.jackson.yaml)
+    implementation(libs.jackson.kotlin)
 
     implementation(project(":domain"))
     implementation(project(":core"))
