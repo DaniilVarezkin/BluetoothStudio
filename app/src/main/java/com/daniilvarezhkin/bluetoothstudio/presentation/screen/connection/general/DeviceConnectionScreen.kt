@@ -1,4 +1,4 @@
-package com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection
+package com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.general
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -21,28 +21,33 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daniilvarezhkin.bluetoothstudio.R
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.GattCharacteristic
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.shared.ConnectionUiState
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.shared.ConnectionViewModel
 import com.daniilvarezhkin.bluetoothstudio.presentation.views.ConnectionTextStatusView
 import com.daniilvarezhkin.bluetoothstudio.presentation.views.GattServiceListView
 
 @Composable
-fun DeviceConnectionScreen(
-    viewModel: DeviceConnectionViewModel,
+fun ConnectionScreen(
+    viewModel: ConnectionViewModel,
     onClickBack: () -> Unit,
+    onClickCharacteristic: (GattCharacteristic) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    DeviceConnectionScreenContent(
-        uiState,
-        onClickBack,
-        viewModel::readCharacteristic,
+    ConnectionScreenContent(
+        uiState = uiState,
+        onClickBack = onClickBack,
+        onClickCharacteristic = onClickCharacteristic,
+        onClickReadCharacteristic = viewModel::readCharacteristic,
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DeviceConnectionScreenContent(
-    uiState: DeviceConnectionUiState,
+fun ConnectionScreenContent(
+    uiState: ConnectionUiState,
     onClickBack: () -> Unit,
+    onClickCharacteristic: (GattCharacteristic) -> Unit,
     onClickReadCharacteristic: (GattCharacteristic) -> Unit
 ) {
     Scaffold(
@@ -76,6 +81,7 @@ fun DeviceConnectionScreenContent(
             Text("${stringResource(R.string.address)}: ${uiState.macAddress}")
             GattServiceListView(
                 services = uiState.services,
+                onClickCharacteristic = onClickCharacteristic,
                 onClickReadCharacteristic = onClickReadCharacteristic,
                 modifier = Modifier.fillMaxWidth()
             )

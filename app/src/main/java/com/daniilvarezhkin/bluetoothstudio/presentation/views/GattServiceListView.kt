@@ -1,5 +1,6 @@
 package com.daniilvarezhkin.bluetoothstudio.presentation.views
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,10 +25,12 @@ import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.GattChara
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.GattService
 import com.daniilvarezhkin.bluetoothstudio.presentation.components.ExpandableCard
 import com.daniilvarezhkin.bluetoothstudio.presentation.ui.theme.Typography
+import kotlin.Unit
 
 @Composable
 fun GattServiceListView(
     services: List<GattService>,
+    onClickCharacteristic: (GattCharacteristic) -> Unit,
     onClickReadCharacteristic: (GattCharacteristic) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -38,6 +41,7 @@ fun GattServiceListView(
             GattServiceItemView(
                 service = service,
                 onClickRead = onClickReadCharacteristic,
+                onClickCharacteristic = onClickCharacteristic,
                 modifier = Modifier
                     .fillMaxWidth()
             )
@@ -109,6 +113,7 @@ fun GattCharacteristicView(
 fun GattServiceItemView(
     service: GattService,
     onClickRead: (GattCharacteristic) -> Unit,
+    onClickCharacteristic: (GattCharacteristic) -> Unit,
     modifier: Modifier = Modifier
 ) {
     ExpandableCard(
@@ -128,6 +133,7 @@ fun GattServiceItemView(
                     onClickRead = onClickRead,
                     modifier = Modifier
                         .padding(10.dp)
+                        .clickable(onClick = { onClickCharacteristic(characteristic) })
                 )
             }
         }

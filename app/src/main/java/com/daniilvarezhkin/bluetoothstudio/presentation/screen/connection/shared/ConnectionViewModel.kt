@@ -1,4 +1,4 @@
-package com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection
+package com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.shared
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,20 +17,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
-@HiltViewModel(assistedFactory = DeviceConnectionViewModel.Factory::class)
-class DeviceConnectionViewModel @AssistedInject constructor(
+@HiltViewModel(assistedFactory = ConnectionViewModel.Factory::class)
+class ConnectionViewModel @AssistedInject constructor(
     private val getBleConnectionUseCase: GetBleConnectionUseCase,
     @Assisted private val macAddress: String
 ) : ViewModel() {
 
     @AssistedFactory
     interface Factory {
-        fun create(macAddress: String): DeviceConnectionViewModel
+        fun create(macAddress: String): ConnectionViewModel
     }
 
     private var observeConnectionStateJob: Job? = null
     private var observeGattServicesStateJob: Job? = null
-    private val _uiState = MutableStateFlow(DeviceConnectionUiState(macAddress = macAddress))
+    private val _uiState = MutableStateFlow(ConnectionUiState(macAddress = macAddress))
     val uiState = _uiState.asStateFlow()
 
 
