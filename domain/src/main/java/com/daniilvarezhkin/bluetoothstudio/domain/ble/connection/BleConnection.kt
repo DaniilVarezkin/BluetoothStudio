@@ -9,6 +9,6 @@ interface BleConnection {
     val connectionState: StateFlow<ConnectionState>
     val gattServices: StateFlow<List<GattService>>
     fun readCharacteristic(characteristic: GattCharacteristic)
-    fun connect();
-    fun disconnect();
+    fun connect()
+    fun disconnect()
 }

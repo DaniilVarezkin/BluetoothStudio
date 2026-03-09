@@ -96,7 +96,7 @@ internal object SpecificationModule {
                 AssignedServiceRepositoryImpl(loader.load().uuids)
             }
         } catch (e: Exception) {
-            Timber.e("Ошибка загрузки назначенных сервисов")
+            Timber.e("Ошибка загрузки назначенных сервисов: ${e.message}")
             AssignedServiceRepositoryImpl(emptyList())
         }
     }
@@ -110,7 +110,7 @@ internal object SpecificationModule {
                 AssignedCharacteristicRepositoryImpl(loader.load().uuids)
             }
         } catch (e: Exception) {
-            Timber.e("Ошибка загрузки назначенных характеристик")
+            Timber.e("Ошибка загрузки назначенных характеристик: ${e.message}")
             AssignedCharacteristicRepositoryImpl(emptyList())
         }
     }
