@@ -16,4 +16,9 @@
 <!--  Gatt  -->
     <string name="custom_service">Custom service</string>
     <string name="custom_characteristic">Custom characteristic</string>
+
+<!--  Bottom Navigation  -->
+    <string name="nav_item_devices">Devices</string>
+    <string name="nav_item_connections">Connections</string>
+    <string name="nav_item_settings">Settings</string>
 </resources>
