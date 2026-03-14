@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BluetoothStudio</string>
+    <string name="unknown_name">Нет имени</string>
+    <string name="address">Адресс</string>
+    <string name="connecting">Соединение</string>
+    <string name="discover_services">Определение сервисов</string>
+    <string name="connected">Соединено</string>
+    <string name="disconnected">Нет соединения</string>
+    <string name="custom_service">Нестандартный сервис</string>
+    <string name="custom_characteristic">Нестандартная характеристика</string>
+    <string name="nav_item_devices">Устройства</string>
+    <string name="nav_item_connections">Подключения</string>
+    <string name="nav_item_settings">Настройки</string>
+</resources>

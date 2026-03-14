@@ -1,9 +1,7 @@
 <resources>
     <string name="app_name">BluetoothStudio</string>
-
-    
 <!--  Device  -->
-    <string name="rssi_unit">dBm</string>
+    <string name="rssi_unit" translatable="false">dBm</string>
     <string name="unknown_name">Unknown</string>
     <string name="address">Address</string>
 
