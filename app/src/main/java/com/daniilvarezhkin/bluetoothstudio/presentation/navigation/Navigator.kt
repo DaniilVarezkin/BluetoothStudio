@@ -9,7 +9,11 @@ class Navigator(
     fun goTo(key: NavKey) {
         Timber.v("Переход на экран $key")
         if (key in state.backStacks.keys) {
-            state.topLevelRoute = key
+            if (key == state.topLevelRoute) {
+                state.backStacks[state.topLevelRoute]?.removeAll { it !== state.topLevelRoute }
+            } else {
+                state.topLevelRoute = key
+            }
         } else {
             state.backStacks[state.topLevelRoute]?.add(key)
         }

@@ -3,19 +3,26 @@ package com.daniilvarezhkin.bluetoothstudio.di
 import android.content.Context
 import com.daniilvarezhkin.bluetoothstudio.data.ble.connection.BleConnectionFactoryImpl
 import com.daniilvarezhkin.bluetoothstudio.data.ble.connection.GattMapper
+import com.daniilvarezhkin.bluetoothstudio.data.ble.connections.BleConnectionManagerImpl
 import com.daniilvarezhkin.bluetoothstudio.data.ble.scan.BleScannerImpl
 import com.daniilvarezhkin.bluetoothstudio.data.ble.scan.repository.BleDeviceRepositoryImpl
+import com.daniilvarezhkin.bluetoothstudio.data.ble.settings.SettingsRepositoryImpl
+import com.daniilvarezhkin.bluetoothstudio.data.ble.settings.settingsDataStore
 import com.daniilvarezhkin.bluetoothstudio.data.ble.specification.loader.AssignedCharacteristicListLoaderImpl
 import com.daniilvarezhkin.bluetoothstudio.data.ble.specification.loader.AssignedServiceListLoaderImpl
 import com.daniilvarezhkin.bluetoothstudio.data.ble.specification.repository.AssignedCharacteristicRepositoryImpl
 import com.daniilvarezhkin.bluetoothstudio.data.ble.specification.repository.AssignedServiceRepositoryImpl
+import com.daniilvarezhkin.bluetoothstudio.data.log.LogRepositoryImpl
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.BleConnectionFactory
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connections.BleConnectionManager
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScanner
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.repository.BleDeviceRepository
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.specification.loader.AssignedCharacteristicListLoader
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.specification.loader.AssignedServiceListLoader
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.specification.repository.AssignedCharacteristicRepository
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.specification.repository.AssignedServiceRepository
+import com.daniilvarezhkin.bluetoothstudio.domain.log.LogRepository
+import com.daniilvarezhkin.bluetoothstudio.domain.settings.repository.SettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,8 +40,8 @@ internal object ScanModule {
 
     @Provides
     @ViewModelScoped
-    fun provideBleScanner(@ApplicationContext context: Context): BleScanner {
-        return BleScannerImpl(context)
+    fun provideBleScanner(@ApplicationContext context: Context, logRepository: LogRepository): BleScanner {
+        return BleScannerImpl(context, logRepository)
     }
 
     @Provides
@@ -45,16 +52,24 @@ internal object ScanModule {
 }
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 internal object ConnectModule {
 
     @Provides
-    @ViewModelScoped
-    fun provideBleConnectionFactory(@ApplicationContext context: Context, gattMapper: GattMapper): BleConnectionFactory {
-        return BleConnectionFactoryImpl(context, gattMapper)
+    @Singleton
+    fun provideBleConnectionFactory(
+        @ApplicationContext context: Context,
+        gattMapper: GattMapper,
+        logRepository: LogRepository
+    ): BleConnectionFactory {
+        return BleConnectionFactoryImpl(context, gattMapper, logRepository)
     }
 
-
+    @Provides
+    @Singleton
+    fun provideBleConnectionManager(factory: BleConnectionFactory): BleConnectionManager {
+        return BleConnectionManagerImpl(factory)
+    }
 }
 
 @Module
@@ -92,7 +107,7 @@ internal object SpecificationModule {
     fun provideAssignedServiceRepository(loader: AssignedServiceListLoader): AssignedServiceRepository {
         return try {
             runBlocking {
-                Timber.i("Загрузка стандартных сервисов")
+                Timber.v("Загрузка стандартных сервисов")
                 AssignedServiceRepositoryImpl(loader.load().uuids)
             }
         } catch (e: Exception) {
@@ -106,12 +121,32 @@ internal object SpecificationModule {
     fun provideAssignedCharacteristicRepository(loader: AssignedCharacteristicListLoader): AssignedCharacteristicRepository {
         return try {
             runBlocking {
-                Timber.i("Загрузка стандартных характеристик")
+                Timber.v("Загрузка стандартных характеристик")
                 AssignedCharacteristicRepositoryImpl(loader.load().uuids)
             }
         } catch (e: Exception) {
             Timber.e("Ошибка загрузки назначенных характеристик: ${e.message}")
             AssignedCharacteristicRepositoryImpl(emptyList())
         }
+    }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+internal object LogModule {
+    @Provides
+    @Singleton
+    fun provideLogRepository(): LogRepository {
+        return LogRepositoryImpl()
+    }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+internal object SettingsModule {
+    @Provides
+    @Singleton
+    fun provideSettingsRepository(@ApplicationContext context: Context): SettingsRepository {
+        return SettingsRepositoryImpl(context.settingsDataStore)
     }
 }

@@ -8,10 +8,13 @@ import android.bluetooth.le.ScanFilter
 import android.bluetooth.le.ScanResult
 import android.bluetooth.le.ScanSettings
 import android.content.Context
+import android.util.Log
 import androidx.annotation.RequiresPermission
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScanner
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.model.BleScanResult
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.model.BleScannedDevice
+import com.daniilvarezhkin.bluetoothstudio.domain.log.LogRepository
+import com.daniilvarezhkin.bluetoothstudio.domain.log.LogTag
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -19,7 +22,8 @@ import timber.log.Timber
 import java.util.concurrent.ConcurrentHashMap
 
 class BleScannerImpl(
-    val context: Context
+    val context: Context,
+    val logRepository: LogRepository,
 ) : BleScanner {
     private val foundDeviceMap = ConcurrentHashMap<String, BleScannedDevice>()
     private val _foundDevices: MutableStateFlow<BleScanResult> = MutableStateFlow(BleScanResult())
@@ -45,37 +49,42 @@ class BleScannerImpl(
     private val scanCallback: ScanCallback = object : ScanCallback() {
         @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
         override fun onScanResult(callbackType: Int, result: ScanResult?) {
-            Timber.i("Обновлен результат сканирования")
+            Timber.v("Обновлен результат сканирования")
             if (result == null) return
 
             val scannedDevice = BleScannedDevice(
                 name = result.device.name ?: result.scanRecord?.deviceName,
-                mac = result.device.address,
+                address = result.device.address,
                 rssi = result.rssi
             )
 
-            foundDeviceMap[scannedDevice.mac] = scannedDevice
+            foundDeviceMap[scannedDevice.address] = scannedDevice
 
             _foundDevices.value = BleScanResult(foundDeviceMap.values.sortedByDescending { device -> device.rssi })
         }
 
         override fun onScanFailed(errorCode: Int) {
             super.onScanFailed(errorCode)
-            Timber.e("Ошибка: $errorCode")
+            logRepository.addBLog(Log.ERROR, LogTag.APP, "ScanFailed. Error code: $errorCode")
+
         }
     }
 
     @RequiresPermission(allOf = [Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT])
     override fun startScan() {
-        Timber.i("Начало сканирования")
-        leScanner.startScan(scanCallback)
-        _isScanning.value = true
+        if(!isScanning.value) {
+            logRepository.addBLog(Log.INFO, LogTag.APP, "Start scanning")
+            leScanner.startScan(scanCallback)
+            _isScanning.value = true
+        }
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     override fun stopScan() {
-        Timber.i("Остановка сканирования")
-        leScanner.stopScan(scanCallback)
-        _isScanning.value = false
+        if(isScanning.value) {
+            logRepository.addBLog(Log.INFO, LogTag.APP, "Stop scanning")
+            leScanner.stopScan(scanCallback)
+            _isScanning.value = false
+        }
     }
 }

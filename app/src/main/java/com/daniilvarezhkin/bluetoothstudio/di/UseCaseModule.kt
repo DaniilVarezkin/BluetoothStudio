@@ -1,7 +1,7 @@
 package com.daniilvarezhkin.bluetoothstudio.di
 
-import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.BleConnectionFactory
-import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.usecase.GetBleConnectionUseCase
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.usecase.GetOrCreateDeviceManagerUseCase
+import com.daniilvarezhkin.bluetoothstudio.domain.ble.connections.BleConnectionManager
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.BleScanner
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.repository.BleDeviceRepository
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.GetFoundedDevicesUseCase
@@ -44,7 +44,7 @@ internal object UseCaseModule {
 
     @Provides
     @ViewModelScoped
-    fun provideGetBleConnectionUseCase(factory: BleConnectionFactory): GetBleConnectionUseCase {
-        return GetBleConnectionUseCase(factory)
+    fun provideGetBleConnectionUseCase(manager: BleConnectionManager): GetOrCreateDeviceManagerUseCase {
+        return GetOrCreateDeviceManagerUseCase(manager)
     }
 }

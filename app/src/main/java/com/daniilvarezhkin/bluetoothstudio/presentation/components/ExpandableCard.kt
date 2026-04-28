@@ -20,9 +20,10 @@ import androidx.compose.ui.Modifier
 fun ExpandableCard(
     modifier: Modifier = Modifier,
     title: @Composable () -> Unit,
+    isExpendedDefault: Boolean = false,
     content: @Composable () -> Unit,
 ) {
-    var isExpanded by remember { mutableStateOf(true) }
+    var isExpanded by remember { mutableStateOf(isExpendedDefault) }
     Card(modifier = modifier) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,

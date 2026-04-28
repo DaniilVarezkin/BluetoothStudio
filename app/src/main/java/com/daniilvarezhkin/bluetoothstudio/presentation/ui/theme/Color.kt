@@ -14,3 +14,10 @@ val Connecting = Color(0xFFFF5722)
 val DiscoverService = Color(0xFFFF8D22)
 val Connected = Color(0xFF00E600)
 val Disconnected = Color(0xFFF80000)
+
+
+val Verbose = Color(0xFFFFFFFF)
+val Debug = Color(0xFF299999)
+val Info = Color(0xFFAABF21)
+val Warning = Color(0xFFBBB529)
+val Error = Color(0xFFFF6A5C)

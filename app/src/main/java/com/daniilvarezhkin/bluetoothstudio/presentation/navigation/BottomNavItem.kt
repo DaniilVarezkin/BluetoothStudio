@@ -1,5 +1,6 @@
 package com.daniilvarezhkin.bluetoothstudio.presentation.navigation
 
+import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.AccountBox
@@ -21,6 +22,10 @@ val TOP_LEVEL_DESTINATIONS = mapOf(
     Route.Connections to BottomNavItem(
         R.string.nav_item_connections,
         Icons.Filled.AccountBox
+    ),
+    Route.Console to BottomNavItem(
+        R.string.nav_item_console,
+        Icons.AutoMirrored.Filled.List
     ),
     Route.Settings to BottomNavItem(
         R.string.nav_item_settings,

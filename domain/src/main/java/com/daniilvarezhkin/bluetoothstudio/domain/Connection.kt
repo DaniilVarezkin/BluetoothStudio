@@ -1,0 +1,3 @@
+package com.daniilvarezhkin.bluetoothstudio.domain
+
+interface Connection

@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.timber)
     implementation(libs.jackson.yaml)
     implementation(libs.jackson.kotlin)
+    implementation(libs.androidx.datastore.preferences)
 
     implementation(project(":domain"))
     implementation(project(":core"))

@@ -1,13 +1,10 @@
 package com.daniilvarezhkin.bluetoothstudio.presentation.navigation
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
@@ -17,10 +14,13 @@ import androidx.navigation3.ui.NavDisplay
 import com.daniilvarezhkin.bluetoothstudio.data.ble.permissions.BLUETOOTH_PERMISSIONS
 import com.daniilvarezhkin.bluetoothstudio.data.ble.permissions.PermissionManager
 import com.daniilvarezhkin.bluetoothstudio.presentation.navigation.connection.ConnectionNavigation
-import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.shared.ConnectionViewModel
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.ConnectionViewModel
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connections.ConnectionsScreen
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.console.ConsoleScreen
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.permission.PermissionScreen
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.scan.ScanScreen
-import com.daniilvarezhkin.bluetoothstudio.presentation.views.BottomNavigation
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.settings.SettingsScreen
+import com.daniilvarezhkin.bluetoothstudio.presentation.views.navigation.BottomNavigation
 
 @Composable
 fun NavigationRoot(
@@ -51,7 +51,7 @@ fun NavigationRoot(
         NavDisplay(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .padding(bottom = innerPadding.calculateBottomPadding()),
             onBack = { navigator.goBack() },
             entries = navigationState.toEntries(
                 entryDecorators = listOf(
@@ -66,38 +66,41 @@ fun NavigationRoot(
                     entry<Route.Devices> {
                         ScanScreen(
                             viewModel = hiltViewModel(),
-                            onDeviceClick = { macAddress ->
-                                navigator.goTo(Route.Connection(macAddress))
+                            onDeviceClick = {
+                                navigator.goTo(Route.Connections)
+                                navigator.goTo(Route.Connection.General(it))
                             }
                         )
                     }
 
-                    entry<Route.Connections> { key ->
-                        Box(
-                            modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Подключения")
-                        }
+                    entry<Route.Connections> {
+                        ConnectionsScreen(
+                            viewModel = hiltViewModel(),
+                            onNavigateToConnection = { navigator.goTo(Route.Connection.General(it)) }
+                        )
                     }
 
-                    entry<Route.Settings> { key ->
-                        Box(
-                            modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text("Настройки")
-                        }
-                    }
-
-                    entry<Route.Connection> { key ->
+                    entry<Route.Connection.General> { key ->
                         val connectionViewModel = hiltViewModel(
                             creationCallback = { factory: ConnectionViewModel.Factory ->
-                                factory.create(key.macAddress)
+                                factory.create(key.address)
                             }
                         )
                         ConnectionNavigation(
+                            startRoute = key,
                             connectionViewModel = connectionViewModel,
+                        )
+                    }
+
+                    entry<Route.Console> {
+                        ConsoleScreen(
+                            viewModel = hiltViewModel(),
+                        )
+                    }
+
+                    entry<Route.Settings> {
+                        SettingsScreen(
+                            viewModel = hiltViewModel()
                         )
                     }
                 }

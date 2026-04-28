@@ -4,5 +4,6 @@ enum class ConnectionState {
     CONNECTING,
     DISCOVER_SERVICES,
     CONNECTED,
+    DISCONNECTING,
     DISCONNECTED
 }
