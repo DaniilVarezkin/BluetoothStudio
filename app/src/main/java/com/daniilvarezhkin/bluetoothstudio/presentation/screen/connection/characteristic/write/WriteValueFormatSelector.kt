@@ -1,0 +1,31 @@
+package com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.write
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.daniilvarezhkin.bluetoothstudio.presentation.components.SelectableBadge
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.utils.CharWriteFormat
+
+@Composable
+fun WriteValueFormatSelector(
+    selectedFormat: CharWriteFormat,
+    onSelectFormat: (CharWriteFormat) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        CharWriteFormat.entries.forEach { format ->
+
+            SelectableBadge(
+                label = format.label,
+                isSelected = selectedFormat == format,
+                onSelect = { onSelectFormat(format) }
+            )
+        }
+    }
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_item_devices">Устройства</string>
+    <string name="nav_item_connections">Подключения</string>
+    <string name="nav_item_console">Консоль</string>
+    <string name="nav_item_settings">Настройки</string>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<!--    Read  -->
+    <string name="no_char_actions">"There are no available actions for this characteristic."</string>
+    <string name="read_char_value">"Read value"</string>
+    <string name="no_read_value_yet">"No value read yet"</string>
+    <string name="read_value">"Read"</string>
+    <string name="press_read_button">Press \"Read\" to get characteristic value</string>
+
+<!--    Write  -->
+    <string name="write_char_value">"Write value"</string>
+    <string name="enter_value_text">"Enter value and write it to characteristic"</string>
+    <string name="support_write_text_format_value">"Text will be encoded as UTF-8"</string>
+    <string name="support_write_byte_array_format_value">"Example: 01 0A FF or 010AFF"</string>
+    <string name="support_write_uint_8_format_value">"Example: 255"</string>
+    <string name="write_text_format_label">"Text"</string>
+    <string name="write_byte_array_format_label">"Byte array"</string>
+    <string name="write_uint8_format_label">Unsigned number</string>
+</resources>

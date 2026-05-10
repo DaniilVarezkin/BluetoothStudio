@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="connecting">Соединение</string>
+    <string name="discover_services">Определение сервисов</string>
+    <string name="connected">Соединено</string>
+    <string name="disconnecting">Разъединение</string>
+    <string name="disconnected">Нет соединения</string>
+</resources>

@@ -17,7 +17,5 @@ interface DeviceConnection {
     val charValues: StateFlow<Map<CharacteristicKey, ByteArray?>>
     fun connect()
     fun disconnect()
-
     fun sendCommand(command: Command)
-
 }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="nav_item_devices">Devices</string>
+    <string name="nav_item_connections">Connections</string>
+    <string name="nav_item_console">Console</string>
+    <string name="nav_item_settings">Settings</string>
+</resources>

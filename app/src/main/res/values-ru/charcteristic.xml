@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="no_char_actions">"Для этой характеристики нет доступных действий."</string>
+    <string name="read_char_value">"Чтение значения"</string>
+    <string name="no_read_value_yet">Значение еще не прочитано</string>
+    <string name="read_value">Прочитать</string>
+    <string name="press_read_button">Нажмите кнопку \"Прочитать\", чтобы получить значение характеристики</string>
+    <string name="write_char_value">Записать</string>
+    <string name="enter_value_text">Введите значение и запишите его в характеристику</string>
+    <string name="support_write_text_format_value">Текст будет закодирован как UTF-8</string>
+    <string name="support_write_byte_array_format_value">Пример: 01 0A FF or 010AFF</string>
+    <string name="support_write_uint_8_format_value">Пример: 255</string>
+    <string name="write_text_format_label">Текст</string>
+    <string name="write_byte_array_format_label">Массив байтов</string>
+    <string name="write_uint8_format_label">Беззнаковое число</string>
+</resources>

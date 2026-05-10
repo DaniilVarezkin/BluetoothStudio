@@ -2,7 +2,6 @@ package com.daniilvarezhkin.bluetoothstudio.presentation.screen.scan
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.daniilvarezhkin.bluetoothstudio.domain.ble.connections.BleConnectionManager
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.GetFoundedDevicesUseCase
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.GetScanStateUseCase
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.scan.usecase.StartScanBleUseCase
@@ -21,7 +20,6 @@ class ScanViewModel @Inject constructor(
     private val stopScanUseCase: StopScanBleUseCase,
     private val getScanStateUseCase: GetScanStateUseCase,
     private val getFoundedDevicesUseCase: GetFoundedDevicesUseCase,
-    private val bleConnectionManager: BleConnectionManager
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ScanScreenUiState())
     val uiState = _uiState.asStateFlow()
@@ -30,7 +28,6 @@ class ScanViewModel @Inject constructor(
     val foundedDevices = _foundedDevices.asStateFlow()
 
     init {
-        //TODO  узнать как лучше запускать корутины в viewModel
         viewModelScope.launch {
             getScanStateUseCase().collect { scanState ->
                 _uiState.update { _uiState.value.copy(

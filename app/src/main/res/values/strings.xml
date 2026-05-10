@@ -1,26 +1,8 @@
 <resources>
-    <string name="app_name">BluetoothStudio</string>
+    <string name="app_name" translatable="false">BluetoothStudio</string>
 <!--  Device  -->
-    <string name="rssi_value_format" translatable="false">%d dBm</string>
     <string name="unknown_name">Unknown</string>
     <string name="address">Address</string>
-
-<!--  ConnectionState  -->
-    <string name="connecting">Connecting</string>
-    <string name="discover_services">Discover services</string>
-    <string name="connected">Connected</string>
-    <string name="disconnecting">Disconnecting</string>
-    <string name="disconnected">Disconnected</string>
-
-<!--  Gatt  -->
-    <string name="custom_service">Custom service</string>
-    <string name="custom_characteristic">Custom characteristic</string>
-
-<!--  Bottom Navigation  -->
-    <string name="nav_item_devices">Devices</string>
-    <string name="nav_item_connections">Connections</string>
-    <string name="nav_item_console">Console</string>
-    <string name="nav_item_settings">Settings</string>
 
 <!--  Settings  -->
     <string name="setting_show_timestamp_console">Show timestamp in console logs</string>

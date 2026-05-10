@@ -14,6 +14,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -113,8 +117,14 @@ fun GattServiceItemView(
     onClickCharacteristic: (GattCharacteristic) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    var isCardExpanded by rememberSaveable {
+        mutableStateOf(false)
+    }
     ExpandableCard(
         modifier = modifier,
+        isExpanded = isCardExpanded,
+        onExpandedChange = { isCardExpanded = it },
         title = {
             GattServiceTitleView(
                 service,
