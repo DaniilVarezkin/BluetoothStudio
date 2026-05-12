@@ -7,7 +7,10 @@ import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.enums.Connectio
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.command.Command
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.key.CharacteristicKey
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.usecase.GetOrCreateDeviceManagerUseCase
+import com.daniilvarezhkin.bluetoothstudio.domain.eventbus.EventBus
 import com.daniilvarezhkin.bluetoothstudio.domain.log.LogRepository
+import com.daniilvarezhkin.bluetoothstudio.presentation.event.publishSnackBar
+import com.daniilvarezhkin.bluetoothstudio.presentation.snackbar.AppSnackbarVisuals
 import com.daniilvarezhkin.core.Result
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
@@ -31,6 +34,7 @@ import timber.log.Timber
 class ConnectionViewModel @AssistedInject constructor(
     private val getOrCreateBleConnectionUseCase: GetOrCreateDeviceManagerUseCase,
     private val logRepository: LogRepository, //TODO вынести в usecase
+    private val eventBus: EventBus,
     @Assisted private val address: String
 ) : ViewModel() {
 
@@ -81,7 +85,14 @@ class ConnectionViewModel @AssistedInject constructor(
             deviceConnectionFlow.value?.sendCommand(Command.Read(charKey, onGetResult = { result ->
                 Timber.d("Получен результат команды")
                 result.onSuccess { Timber.d("Успех: $it") }
-                result.onError { Timber.w("Неудача") }
+                result.onError {
+                    Timber.w("Неудача")
+                    showSnackbar(
+                        AppSnackbarVisuals(
+                            message = "Чтение не удалось"
+                        )
+                    )
+                }
             }))
         }
     }
@@ -96,7 +107,18 @@ class ConnectionViewModel @AssistedInject constructor(
 
             is Result.Error -> {
                 Timber.e("DeviceManager creation error: ${result.error}")
+                showSnackbar(
+                    AppSnackbarVisuals(
+                        message = "Ошибка инициализации подключения: ${result.error}"
+                    )
+                )
             }
+        }
+    }
+
+    private fun showSnackbar(appSnackbarVisuals: AppSnackbarVisuals) {
+        viewModelScope.launch {
+            eventBus.publishSnackBar(appSnackbarVisuals)
         }
     }
 

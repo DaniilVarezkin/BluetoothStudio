@@ -6,6 +6,7 @@ import android.content.Context
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.BleConnectionFactory
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.ConnectionError
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.DeviceConnection
+import com.daniilvarezhkin.bluetoothstudio.domain.eventbus.EventBus
 import com.daniilvarezhkin.bluetoothstudio.domain.log.LogRepository
 import com.daniilvarezhkin.core.Result
 
@@ -16,6 +17,7 @@ class BleConnectionFactoryImpl(
     private val context: Context,
     private val gattMapper: GattMapper,
     private val logRepository: LogRepository,
+    private val eventBus: EventBus,
 ) : BleConnectionFactory {
 
     private val bluetoothAdapter: BluetoothAdapter?
@@ -38,7 +40,8 @@ class BleConnectionFactoryImpl(
                     context = context.applicationContext,
                     device = device,
                     gattMapper = gattMapper,
-                    logRepository = logRepository
+                    logRepository = logRepository,
+                    eventBus = eventBus
                 )
             )
         } catch (e: Throwable) {

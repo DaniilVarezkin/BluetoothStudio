@@ -3,7 +3,10 @@ package com.daniilvarezhkin.bluetoothstudio.presentation.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
@@ -13,6 +16,7 @@ import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import com.daniilvarezhkin.bluetoothstudio.data.ble.permissions.BLUETOOTH_PERMISSIONS
 import com.daniilvarezhkin.bluetoothstudio.data.ble.permissions.PermissionManager
+import com.daniilvarezhkin.bluetoothstudio.presentation.RootViewModel
 import com.daniilvarezhkin.bluetoothstudio.presentation.navigation.connection.ConnectionNavigation
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.ConnectionViewModel
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connections.ConnectionsScreen
@@ -20,11 +24,14 @@ import com.daniilvarezhkin.bluetoothstudio.presentation.screen.console.ConsoleSc
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.permission.PermissionScreen
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.scan.ScanScreen
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.settings.SettingsScreen
+import com.daniilvarezhkin.bluetoothstudio.presentation.snackbar.SnackBarController
 import com.daniilvarezhkin.bluetoothstudio.presentation.views.navigation.BottomNavigation
+import com.daniilvarezhkin.bluetoothstudio.presentation.views.snackbar.AppSnackbar
 
 @Composable
 fun NavigationRoot(
     permissionManager: PermissionManager,
+    rootViewModel: RootViewModel,
     modifier: Modifier = Modifier
 ) {
     val startRoute = remember {
@@ -38,6 +45,17 @@ fun NavigationRoot(
     val navigationState = rememberNavigationState(startRoute, TOP_LEVEL_DESTINATIONS.keys)
     val navigator = Navigator(navigationState)
 
+    // Snack-bar
+    val snackBarHostState = remember { SnackbarHostState() }
+    val snackBarController = SnackBarController(snackBarHostState)
+
+    LaunchedEffect(Unit) {
+        rootViewModel.snackbars
+            .collect { snackbarMessage ->
+                snackBarController.show(snackbarMessage)
+            }
+    }
+
     Scaffold(
         modifier = modifier,
         bottomBar = {
@@ -45,6 +63,12 @@ fun NavigationRoot(
                 selectedKey = navigationState.topLevelRoute,
                 onSelectKey = navigator::goTo
             )
+        },
+
+        snackbarHost = {
+            SnackbarHost(snackBarHostState) { data ->
+                AppSnackbar(data)
+            }
         }
     ) { innerPadding ->
 

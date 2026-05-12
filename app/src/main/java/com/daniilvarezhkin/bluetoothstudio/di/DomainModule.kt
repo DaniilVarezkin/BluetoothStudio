@@ -12,6 +12,7 @@ import com.daniilvarezhkin.bluetoothstudio.data.ble.specification.loader.Assigne
 import com.daniilvarezhkin.bluetoothstudio.data.ble.specification.loader.AssignedServiceListLoaderImpl
 import com.daniilvarezhkin.bluetoothstudio.data.ble.specification.repository.AssignedCharacteristicRepositoryImpl
 import com.daniilvarezhkin.bluetoothstudio.data.ble.specification.repository.AssignedServiceRepositoryImpl
+import com.daniilvarezhkin.bluetoothstudio.data.eventbus.EventBusImpl
 import com.daniilvarezhkin.bluetoothstudio.data.log.LogRepositoryImpl
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.BleConnectionFactory
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connections.BleConnectionManager
@@ -21,6 +22,7 @@ import com.daniilvarezhkin.bluetoothstudio.domain.ble.specification.loader.Assig
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.specification.loader.AssignedServiceListLoader
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.specification.repository.AssignedCharacteristicRepository
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.specification.repository.AssignedServiceRepository
+import com.daniilvarezhkin.bluetoothstudio.domain.eventbus.EventBus
 import com.daniilvarezhkin.bluetoothstudio.domain.log.LogRepository
 import com.daniilvarezhkin.bluetoothstudio.domain.settings.repository.SettingsRepository
 import dagger.Module
@@ -60,9 +62,10 @@ internal object ConnectModule {
     fun provideBleConnectionFactory(
         @ApplicationContext context: Context,
         gattMapper: GattMapper,
-        logRepository: LogRepository
+        logRepository: LogRepository,
+        eventBus: EventBus,
     ): BleConnectionFactory {
-        return BleConnectionFactoryImpl(context, gattMapper, logRepository)
+        return BleConnectionFactoryImpl(context, gattMapper, logRepository, eventBus)
     }
 
     @Provides
@@ -148,5 +151,15 @@ internal object SettingsModule {
     @Singleton
     fun provideSettingsRepository(@ApplicationContext context: Context): SettingsRepository {
         return SettingsRepositoryImpl(context.settingsDataStore)
+    }
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+internal object EventBusModule {
+    @Provides
+    @Singleton
+    fun provideEventBus(): EventBus {
+        return EventBusImpl()
     }
 }

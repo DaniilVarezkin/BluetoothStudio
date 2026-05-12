@@ -21,6 +21,8 @@ import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.command.C
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.command.CommandError
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.key.CharacteristicKey
 import com.daniilvarezhkin.bluetoothstudio.domain.ble.connection.model.key.ServiceKey
+import com.daniilvarezhkin.bluetoothstudio.domain.eventbus.DeviceConnectionEvent
+import com.daniilvarezhkin.bluetoothstudio.domain.eventbus.EventBus
 import com.daniilvarezhkin.bluetoothstudio.domain.log.LogTag
 import com.daniilvarezhkin.bluetoothstudio.domain.log.LogRepository
 import com.daniilvarezhkin.core.Result
@@ -37,6 +39,7 @@ class DeviceConnectionImpl(
     private val device: BluetoothDevice,
     private val gattMapper: GattMapper,
     private val logRepository: LogRepository,
+    private val eventBus: EventBus,
 ) : DeviceConnection {
 
     override val address: String
@@ -79,6 +82,7 @@ class DeviceConnectionImpl(
 
                 val errorMsg = "GATT Error: ${status.toGattStatusString()} ($status)"
                 Timber.e("[$address] $errorMsg")
+                eventBus.tryPublish(DeviceConnectionEvent.Error(address, errorMsg))
                 logRepository.gattError(address, deviceName, LogTag.CONNECT, errorMsg)
                 return
             }
@@ -90,7 +94,7 @@ class DeviceConnectionImpl(
                 _connectionState.update { ConnectionState.DISCOVER_SERVICES }
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 _connectionState.update { ConnectionState.DISCONNECTED }
-
+                eventBus.tryPublish(DeviceConnectionEvent.Disconnected(address))
                 gatt?.close()
                 if (gatt == bluetoothGatt) {
                     bluetoothGatt = null
@@ -134,6 +138,7 @@ class DeviceConnectionImpl(
 
                 Timber.d("Services discovered")
                 logRepository.gattSuccess(address, deviceName,LogTag.DISCOVER, "Services discovered")
+                eventBus.tryPublish(DeviceConnectionEvent.Connected(address))
 
             } ?: throw RuntimeException("bluetoothGatt is null")
         }
