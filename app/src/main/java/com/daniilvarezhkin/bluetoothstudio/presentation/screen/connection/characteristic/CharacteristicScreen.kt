@@ -22,6 +22,7 @@ import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daniilvarezhkin.bluetoothstudio.R
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.ConnectionUiState
@@ -31,6 +32,7 @@ import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.charac
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.TabItem.WRITE
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.read.ReadCharContent
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.write.WriteCharContent
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.write.WriteCharFragment
 import com.daniilvarezhkin.bluetoothstudio.presentation.ui.theme.Typography
 import com.daniilvarezhkin.bluetoothstudio.presentation.views.connections.ConnectionTopBar
 import com.daniilvarezhkin.bluetoothstudio.presentation.views.navigation.CharacteristicActionBar
@@ -133,9 +135,9 @@ fun CharacteristicScreenContent(
                     }
 
                     WRITE -> {
-                        WriteCharContent(
+                        WriteCharFragment(
+                            writeCharViewModel = hiltViewModel(),
                             onWriteChar = onWriteChar,
-                            modifier = Modifier.fillMaxSize()
                         )
                     }
 

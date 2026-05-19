@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material3.Button
@@ -15,37 +16,41 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.daniilvarezhkin.bluetoothstudio.R
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.utils.CharWriteFormat
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.utils.ByteArrayParseError
+import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.utils.isValidHexString
+
+@Composable
+fun WriteCharFragment(
+    writeCharViewModel: WriteCharViewModel,
+    onWriteChar: (ByteArray) -> Unit,
+) {
+    val uiState by writeCharViewModel.uiState.collectAsStateWithLifecycle()
+
+    WriteCharContent(
+        uiState = uiState,
+        onInputValue = writeCharViewModel::onInputValue,
+        onSelectFormat = writeCharViewModel::onSelectFormat,
+        onWriteChar = onWriteChar, //TODO мб вынести в модель WriteCharViewModel
+        modifier = Modifier.fillMaxSize(),
+    )
+}
 
 @Composable
 fun WriteCharContent(
+    uiState: WriteCharUiState,
+    onInputValue: (String) -> Unit,
+    onSelectFormat: (CharWriteFormat) -> Unit,
     onWriteChar: (ByteArray) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    var selectedFormat by rememberSaveable {
-        mutableStateOf(CharWriteFormat.BYTE_ARRAY)
-    }
-
-    var inputValue by rememberSaveable {
-        mutableStateOf("")
-    }
-
-    val parseResult = remember(inputValue, selectedFormat) {
-        byteArrayOf(127)
-//        inputValue.parseAsWriteValue(selectedFormat)
-    }
-
-    val bytesToWrite = parseResult
-
     Column(
         modifier = modifier.fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
@@ -70,9 +75,8 @@ fun WriteCharContent(
             }
 
             Button(
-                enabled = bytesToWrite != null,
                 onClick = {
-                    bytesToWrite?.let(onWriteChar)
+                    onWriteChar(uiState.parsedBytes)
                 }
             ) {
                 Icon(
@@ -88,56 +92,74 @@ fun WriteCharContent(
         }
 
         WriteValueFormatSelector(
-            selectedFormat = selectedFormat,
-            onSelectFormat = {
-                selectedFormat = it
-            }
+            selectedFormat = uiState.selectedFormat,
+            onSelectFormat = onSelectFormat
         )
 
         OutlinedTextField(
-            value = inputValue,
-            onValueChange = {
-                inputValue = it
+            value = uiState.currentInputValue,
+            onValueChange = { value ->
+                if(uiState.selectedFormat == CharWriteFormat.BYTE_ARRAY) {
+                    if(value.isValidHexString()) {
+                        onInputValue(value)
+                    }
+                }
+                else {
+                    onInputValue(value)
+                }
             },
             modifier = Modifier.fillMaxWidth(),
             label = {
                 Text(
-                    text = when (selectedFormat) {
-                        CharWriteFormat.TEXT -> stringResource(R.string.write_text_format_label)
+                    text = when (uiState.selectedFormat) {
+                        CharWriteFormat.TEXT_UTF_8 -> stringResource(R.string.write_text_format_label)
                         CharWriteFormat.BYTE_ARRAY -> stringResource(R.string.write_byte_array_format_label)
-                        CharWriteFormat.UINT_8 -> stringResource(R.string.write_uint8_format_label)
                     }
                 )
             },
             placeholder = {
                 Text(
-                    text = when (selectedFormat) {
-                        CharWriteFormat.TEXT -> "Hello"
+                    text = when (uiState.selectedFormat) {
+                        CharWriteFormat.TEXT_UTF_8 -> "Hello"
                         CharWriteFormat.BYTE_ARRAY -> "6CFF3C"
-                        CharWriteFormat.UINT_8 -> "255"
                     }
                 )
             },
             supportingText = {
                 Text(
-                    text = when (selectedFormat) {
-                        CharWriteFormat.TEXT -> stringResource(R.string.support_write_text_format_value)
+                    text = if (uiState.error == null) when (uiState.selectedFormat) {
+                        CharWriteFormat.TEXT_UTF_8 -> stringResource(R.string.support_write_text_format_value)
                         CharWriteFormat.BYTE_ARRAY -> stringResource(R.string.support_write_byte_array_format_value)
-                        CharWriteFormat.UINT_8 -> stringResource(R.string.support_write_uint_8_format_value)
+                    } else when (uiState.error) {
+                        ByteArrayParseError.InvalidHexCharacters -> stringResource(R.string.incorrect_chars_parse_error_message)
+                        ByteArrayParseError.OddHexLength -> stringResource(R.string.odd_length_parse_error_message)
                     }
                 )
             },
+            isError = uiState.error != null,
             minLines = 4,
             maxLines = 8,
             textStyle = MaterialTheme.typography.bodyMedium.copy(
                 fontFamily = FontFamily.Monospace
             ),
-            shape = MaterialTheme.shapes.small
+            shape = MaterialTheme.shapes.small,
         )
 
         WriteValuePreview(
-            bytes = bytesToWrite,
+            bytes = uiState.parsedBytes,
             modifier = Modifier.fillMaxWidth()
         )
     }
+}
+
+@Composable
+@Preview(showBackground = true, widthDp = 310)
+fun WriteCharContentPreview() {
+    WriteCharContent(
+        uiState = WriteCharUiState(),
+        onInputValue = {},
+        onSelectFormat = {},
+        onWriteChar = {},
+        modifier = Modifier.fillMaxSize(),
+    )
 }

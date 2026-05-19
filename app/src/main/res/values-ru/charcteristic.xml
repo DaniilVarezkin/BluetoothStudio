@@ -13,4 +13,8 @@
     <string name="write_text_format_label">Текст</string>
     <string name="write_byte_array_format_label">Массив байтов</string>
     <string name="write_uint8_format_label">Беззнаковое число</string>
+    <string name="bytes_preview">Превью</string>
+    <string name="empty_bytes_preview_text">Введите допустимое значение, чтобы просмотреть превью</string>
+    <string name="incorrect_chars_parse_error_message">Значение содержит недопустимые символы</string>
+    <string name="odd_length_parse_error_message">Значение содержит нечетное количество символов</string>
 </resources>

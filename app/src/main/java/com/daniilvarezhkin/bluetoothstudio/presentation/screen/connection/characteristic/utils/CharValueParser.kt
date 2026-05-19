@@ -1,33 +1,34 @@
 package com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.utils
 
-fun String.parseAsFormat(format: CharWriteFormat): ByteArray = when(format) {
-    CharWriteFormat.BYTE_ARRAY -> TODO()
-    CharWriteFormat.TEXT -> TODO()
-    CharWriteFormat.UINT_8 -> TODO()
-}
+import com.daniilvarezhkin.core.Result;
 
 fun String.parseAsText(): ByteArray {
     return this.toByteArray(charset = Charsets.UTF_8)
 }
 
-fun String.parseAsHex(): ByteArray {
+/**
+ * Парсит шестнадцатеричную запись байта или массива байтов в ByteArray, байты могут быть разделены следующими символами
+ */
+fun String.parseAsHex(): Result<ByteArray, ByteArrayParseError> {
     val normalizedValue = this
         .trim()
+        .replace(Regex("[\\s,;]+"), "")
 
     if(normalizedValue.isEmpty()) {
-        throw IllegalArgumentException("The string does not contain any parsed characters")
+        return Result.Success(byteArrayOf())
     }
 
-    if(normalizedValue.length % 2 != 0) {
-        throw IllegalArgumentException("The string contains an odd number of elements")
+    if (normalizedValue.length % 2 != 0) {
+        return Result.Error(ByteArrayParseError.OddHexLength)
     }
 
     if (!normalizedValue.matches(Regex("[0-9a-fA-F]+"))) {
-        throw IllegalArgumentException("The string contains invalid characters")
+        return Result.Error(ByteArrayParseError.InvalidHexCharacters)
     }
 
-    return normalizedValue
-        .chunked(2)
-        .map { it.toInt(16).toByte() }
-        .toByteArray()
+    return Result.Success(
+        data = normalizedValue
+            .chunked(2)
+            .map { it.toInt(16).toByte() }
+            .toByteArray())
 }

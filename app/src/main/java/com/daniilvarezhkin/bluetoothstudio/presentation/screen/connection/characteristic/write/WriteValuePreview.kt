@@ -13,9 +13,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.pluralStringResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.daniilvarezhkin.bluetoothstudio.R
 
 @Composable
 fun WriteValuePreview(
@@ -36,7 +39,7 @@ fun WriteValuePreview(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = "Bytes preview",
+                text = stringResource(R.string.bytes_preview),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.SemiBold
@@ -50,13 +53,16 @@ fun WriteValuePreview(
                 )
             } else {
                 Text(
-                    text = "${bytes.size} byte${if (bytes.size == 1) "" else "s"}",
+                    text = pluralStringResource(R.plurals.bytes, bytes.size, bytes.size),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
 
                 Text(
-                    text = bytes.toHexString(),
+                    text = bytes
+                        .toHexString(format = HexFormat.UpperCase)
+                        .chunked(2)
+                        .joinToString(" "),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     fontFamily = FontFamily.Monospace,

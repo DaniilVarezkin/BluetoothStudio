@@ -16,4 +16,10 @@
     <string name="write_text_format_label">"Text"</string>
     <string name="write_byte_array_format_label">"Byte array"</string>
     <string name="write_uint8_format_label">Unsigned number</string>
+    <string name="bytes_preview">Bytes preview</string>
+    <string name="empty_bytes_preview_text">Enter valid value to see bytes</string>
+
+<!--    Parse Errors -->
+    <string name="incorrect_chars_parse_error_message">The value contains invalid characters</string>
+    <string name="odd_length_parse_error_message">The value contains an odd number of characters</string>
 </resources>

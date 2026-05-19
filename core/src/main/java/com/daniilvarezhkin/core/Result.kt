@@ -15,4 +15,14 @@ sealed interface Result<out D, out E: RootError> {
         if(this is Error) action(error)
         return this
     }
+
+    fun getDataOrNull(): D? {
+        return if(this is Success) data
+        else null
+    }
+
+    fun getErrorOrNull(): E? {
+        return if(this is Error) error
+        else null
+    }
 }
