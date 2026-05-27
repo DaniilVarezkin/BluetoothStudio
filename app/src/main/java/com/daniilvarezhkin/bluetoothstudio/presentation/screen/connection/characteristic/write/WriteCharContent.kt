@@ -27,6 +27,7 @@ import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.charac
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.utils.ByteArrayParseError
 import com.daniilvarezhkin.bluetoothstudio.presentation.screen.connection.characteristic.utils.isValidHexString
 
+//TODO сделать блокировку экрана до выполнения команды на запись
 @Composable
 fun WriteCharFragment(
     writeCharViewModel: WriteCharViewModel,
