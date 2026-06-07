@@ -37,9 +37,14 @@ class NavigationState(
 
 val navSerializationModule = SerializersModule {
     polymorphic(NavKey::class) {
-        subclass(Route.Devices::class)
-        subclass(Route.Connections::class)
-        subclass(Route.Settings::class)
+        subclass(Route.PermissionGate.serializer())
+        subclass(Route.Devices.serializer())
+        subclass(Route.Connections.serializer())
+        subclass(Route.Console.serializer())
+        subclass(Route.Settings.serializer())
+
+        subclass(Route.Connection.General.serializer())
+        subclass(Route.Connection.Characteristic.serializer())
     }
 }
 
@@ -58,7 +63,11 @@ fun rememberNavigationState(
         mutableStateOf(startRoute)
     }
 
-    val backStacks = topLevelRoutes.associateWith { key ->
+    val routesWithBackStacks = remember(startRoute, topLevelRoutes) {
+        topLevelRoutes + startRoute
+    }
+
+    val backStacks = routesWithBackStacks.associateWith { key ->
         rememberNavBackStack(key)
     }
 

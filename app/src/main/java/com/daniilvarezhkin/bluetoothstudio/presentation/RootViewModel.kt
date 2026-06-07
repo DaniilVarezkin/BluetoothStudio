@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.daniilvarezhkin.bluetoothstudio.domain.eventbus.DeviceConnectionEvent
 import com.daniilvarezhkin.bluetoothstudio.domain.eventbus.Event
 import com.daniilvarezhkin.bluetoothstudio.domain.eventbus.EventBus
+import com.daniilvarezhkin.bluetoothstudio.presentation.event.UiEvent
 import com.daniilvarezhkin.bluetoothstudio.presentation.snackbar.AppSnackbarVisuals
 import com.daniilvarezhkin.bluetoothstudio.presentation.snackbar.SnackbarType
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +35,11 @@ class RootViewModel @Inject constructor(
     private suspend fun handleEvent(event: Event) {
         Timber.i("Получено событие ${event.javaClass.simpleName}")
         when (event) {
+            // TODo может сделать событие содержаещее мак адресс
+            is UiEvent.ShowSnackbar -> _snackbars.emit(
+                event.appSnackbarVisuals
+            )
+
             is DeviceConnectionEvent.Connected -> _snackbars.emit(
                 AppSnackbarVisuals(
                     "[${event.address}] Устройство подключено",
@@ -54,6 +60,8 @@ class RootViewModel @Inject constructor(
                     SnackbarType.Error
                 )
             )
+
+            else -> Timber.w("Событие ${event.javaClass.simpleName} не обработано")
         }
     }
 }

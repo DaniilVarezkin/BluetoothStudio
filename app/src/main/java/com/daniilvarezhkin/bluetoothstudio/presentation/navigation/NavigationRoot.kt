@@ -84,7 +84,7 @@ fun NavigationRoot(
                 ),
                 entryProvider = entryProvider {
                     entry<Route.PermissionGate> {
-                        PermissionScreen(onGrandPermissions = { navigator.goTo(Route.Devices) })
+                        PermissionScreen(onPermissionsGranted = { navigator.goTo(Route.Devices) })
                     }
 
                     entry<Route.Devices> {
